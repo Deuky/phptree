@@ -1,0 +1,35 @@
+{
+    "name": "phptree/phptree",
+    "description": "CLI PHP qui scanne un répertoire et génère un arbre de fonctionnalités",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": "^8.3",
+        "symfony/console": "^7.0",
+        "nikic/php-parser": "^5.0"
+    },
+    "require-dev": {
+        "pestphp/pest": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "PhpTree\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PhpTree\\Tests\\": "tests/"
+        }
+    },
+    "bin": [
+        "bin/phptree"
+    ],
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable"
+}
