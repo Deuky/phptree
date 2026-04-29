@@ -4,7 +4,8 @@
 !composer.lock
 !src
 !src/Command
+!src/Parser
+!src/Parser/Data
 !bin
 !bin/*
-!tests
 !.gitignore
