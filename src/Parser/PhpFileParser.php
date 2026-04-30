@@ -5,14 +5,13 @@ namespace PhpTree\Parser;
 use PhpParser\Error;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
-use PhpTree\Parser\Data\RawClassData;
 use PhpTree\Internal\FileGetContents;
 use PhpTree\Serializer\Normalizer\NodeNormalizer;
 use RuntimeException;
 
 final class PhpFileParser
 {
-    public function parse(FileGetContents $file): RawClassData|NodeNormalizer|null
+    public function parse(FileGetContents $file): NodeNormalizer|null
     {
         $parser = (new ParserFactory())->createForNewestSupportedVersion();
 
@@ -35,6 +34,6 @@ final class PhpFileParser
         $traverser->addVisitor($visitor);
         $traverser->traverse($ast);
 
-        return $visitor->getRawClassData();
+        return $visitor->getNodeData();
     }
 }

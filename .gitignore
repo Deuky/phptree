@@ -8,7 +8,6 @@
 !src/Serializer
 !src/Serializer/Normalizer
 !src/Serializer/Normalizer/Node
-!src/Enum
 !src/Parser
 !src/Parser/Data
 !bin
