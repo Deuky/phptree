@@ -2,148 +2,71 @@
 
 namespace PhpTree\Parser;
 
-use PhpParser\Error;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
-use PhpParser\NodeTraverser;
+use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\Use_;
+use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\NodeVisitorAbstract;
-use PhpParser\ParserFactory;
-use PhpTree\Parser\Data\RawClassData;
 use RuntimeException;
-use function file_get_contents;
+use PhpTree\Internal\FileGetContents;
+use PhpTree\Serializer\Normalizer\NodeNormalizer;
 
 
-/**
- * @internal
- */
-final class ClassExtractorVisitor extends NodeVisitorAbstract
+class ClassExtractorVisitor extends NodeVisitorAbstract
 {
-    private ?RawClassData $rawClassData = null;
+    private RawClassData|NodeNormalizer|null $rawClassData = null;
     private string $currentNamespace = '';
 
-    public function __construct(private readonly string $filePath) {}
+    public function __construct(private readonly FileGetContents $file) {}
 
-    public function enterNode(Node $node): null|int|Node
+    /**
+     * @see PhpParser\NodeVisitor 
+     */
+    public function enterNode(Node $node): null
     {
-        if ($node instanceof Node\Stmt\Namespace_) {
-            $this->currentNamespace = $node->name !== null
-                ? $node->name->toString()
-                : '';
-
-            return null;
-        }
-
-        if ($node instanceof Class_) {
-            $name = $node->name?->toString() ?? '';
-            $fqcn = $this->currentNamespace !== ''
-                ? $this->currentNamespace . '\\' . $name
-                : $name;
-
-            $extends = null;
-            if ($node->extends !== null) {
-                $extends = $node->extends->toString();
-            }
-
-            $implements = array_map(
-                fn(Node\Name $n): string => $n->toString(),
-                $node->implements,
-            );
-
-            $this->rawClassData = new RawClassData(
-                name: $name,
-                fqcn: $fqcn,
-                namespace: $this->currentNamespace,
-                filePath: $this->filePath,
-                type: 'class',
-                isAbstract: $node->isAbstract(),
-                isFinal: $node->isFinal(),
-                extends: $extends,
-                implements: $implements,
-            );
-
-            return null;
-        }
-
-        if ($node instanceof Interface_) {
-            $name = $node->name->toString();
-            $fqcn = $this->currentNamespace !== ''
-                ? $this->currentNamespace . '\\' . $name
-                : $name;
-
-            $extends = array_map(
-                fn(Node\Name $n): string => $n->toString(),
-                $node->extends,
-            );
-
-            $this->rawClassData = new RawClassData(
-                name: $name,
-                fqcn: $fqcn,
-                namespace: $this->currentNamespace,
-                filePath: $this->filePath,
-                type: 'interface',
-                isAbstract: false,
-                isFinal: false,
-                extends: $extends !== [] ? implode(', ', $extends) : null,
-                implements: [],
-            );
-
-            return null;
-        }
-
-        if ($node instanceof Trait_) {
-            $name = $node->name->toString();
-            $fqcn = $this->currentNamespace !== ''
-                ? $this->currentNamespace . '\\' . $name
-                : $name;
-
-            $this->rawClassData = new RawClassData(
-                name: $name,
-                fqcn: $fqcn,
-                namespace: $this->currentNamespace,
-                filePath: $this->filePath,
-                type: 'trait',
-                isAbstract: false,
-                isFinal: false,
-                extends: null,
-                implements: [],
-            );
-
-            return null;
-        }
-
-        if ($node instanceof Enum_) {
-            $name = $node->name->toString();
-            $fqcn = $this->currentNamespace !== ''
-                ? $this->currentNamespace . '\\' . $name
-                : $name;
-
-            $implements = array_map(
-                fn(Node\Name $n): string => $n->toString(),
-                $node->implements,
-            );
-
-            $this->rawClassData = new RawClassData(
-                name: $name,
-                fqcn: $fqcn,
-                namespace: $this->currentNamespace,
-                filePath: $this->filePath,
-                type: 'enum',
-                isAbstract: false,
-                isFinal: false,
-                extends: null,
-                implements: $implements,
-            );
-
-            return null;
-        }
+        $this->rawClassData ??= match($node::class) {
+            Namespace_::class => $this->namespaceNode($node),
+            Class_::class,
+            Interface_::class,
+            Trait_::class,
+            Enum_::class => new NodeNormalizer(
+                                $node, 
+                                file: $this->file, 
+                                namespace: $this->currentNamespace
+                            ),
+            Use_::class,
+            Return_::class,
+            ClassMethod::class,
+            EnumCase::class,
+            Node\Scalar\String_::class,
+            Node\Name\FullyQualified::class,
+            Node\Expr\New_::class,
+            Node\Name::class,
+            Node\Param::class,
+            Node\Expr\Variable::class,
+            Node\Expr\ConstFetch::class,
+            Node\UseItem::class,
+            Node\Identifier::class => null,
+            default => throw new \Exception('node not allow : '.$node::class)
+        };
 
         return null;
     }
 
-    public function getRawClassData(): ?RawClassData
+    protected function namespaceNode(Namespace_ $node)
+    {
+        $this->currentNamespace = (string) $node->name;
+
+        return null;
+    }
+
+    public function getRawClassData(): NodeNormalizer|RawClassData|null
     {
         return $this->rawClassData;
     }
