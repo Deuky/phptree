@@ -12,7 +12,7 @@ use PhpTree\Serializer\Normalizer\NodeNormalizer;
 
 class ClassExtractorVisitor extends NodeVisitorAbstract
 {
-    private RawClassData|NodeNormalizer|null $nodeData = null;
+    private NodeNormalizer|null $nodeData = null;
     private string $currentNamespace = '';
 
     public function __construct(private readonly FileGetContents $file) {}
@@ -32,20 +32,7 @@ class ClassExtractorVisitor extends NodeVisitorAbstract
                                 file: $this->file, 
                                 namespace: $this->currentNamespace
                             ),
-            Stmt\Use_::class,
-            Stmt\Return_::class,
-            Stmt\ClassMethod::class,
-            Stmt\EnumCase::class,
-            Node\Scalar\String_::class,
-            Node\Name\FullyQualified::class,
-            Node\Expr\New_::class,
-            Node\Name::class,
-            Node\Param::class,
-            Node\Expr\Variable::class,
-            Node\Expr\ConstFetch::class,
-            Node\UseItem::class,
-            Node\Identifier::class => null,
-            default => throw new \Exception('node not allow : '.$node::class)
+            default => null
         };
 
         return null;
