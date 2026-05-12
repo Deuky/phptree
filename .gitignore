@@ -10,6 +10,8 @@
 !src/Serializer/Normalizer/Node
 !src/Parser
 !src/Parser/Data
+!src/Resolver
+!src/Resolver/**
 !bin
 !bin/*
 !.gitignore

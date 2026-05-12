@@ -1,6 +1,6 @@
 <?php
 
-namespace phpTree\Serializer\Normalizer\Node;
+namespace PhpTree\Serializer\Normalizer\Node;
 
 use PhpParser\Node;
 use PhpTree\Internal\FileGetContents;
@@ -16,6 +16,7 @@ abstract class AbstractNodeNormalizer
 	public readonly string $filePath;
 	public readonly bool $isFinal;
 	public readonly array $implements;
+	public readonly array $methods;
 
 	public function __construct(
 		public readonly Node $node, 
@@ -35,6 +36,7 @@ abstract class AbstractNodeNormalizer
         $this->isFinal = $this->initIsFinal();
         $this->filePath = $file->fileName;
         $this->implements = $this->initImplements();
+        $this->methods = $this->initMethods();
 	}
 
 	protected function initExtendsList(): array
@@ -60,5 +62,20 @@ abstract class AbstractNodeNormalizer
 	protected function initImplements(): array
 	{
 		return [];
+	}
+
+	protected function initMethods(): array
+	{
+        $stmts = $this->node->stmts ?? [];
+ 
+        $methods = array_filter(
+            $stmts,
+            fn(Node $stmt): bool => $stmt instanceof Node\Stmt\ClassMethod,
+        );
+
+        return array_values(array_map(
+            fn(Node\Stmt\ClassMethod $method): MethodNodeNormalizer => new MethodNodeNormalizer($method),
+            $methods,
+        ));
 	}
 }

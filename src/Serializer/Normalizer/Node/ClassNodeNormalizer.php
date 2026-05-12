@@ -10,7 +10,7 @@ class ClassNodeNormalizer extends AbstractNodeNormalizer
 
     protected function initExtends(): string
     {
-        return (string) $this->node->extends ?: null;
+        return ((string) $this->node->extends) ?: null;
     }
 
     protected function initIsAbstract(): bool
