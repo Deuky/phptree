@@ -10,7 +10,7 @@ use PhpTree\Resolver\ParameterResolver;
 final class ParameterNodeNormalizer
 {
     public readonly string $name;
-    public readonly ?string $type;
+    public readonly TypeNodeNormalizer $type;
     public readonly bool $isNullable;
     public readonly bool $hasDefault;
     public readonly ?string $defaultValue;
