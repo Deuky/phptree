@@ -13,6 +13,7 @@ use PhpTree\Parser\PhpFileParser;
 use PhpTree\Resolver\ListResolver;
 use InvalidArgumentException;
 use PhpTree\Internal\FileGetContents;
+use PhpTree\Output\ConsoleOutput;
 
 #[AsCommand(
     name: 'scan',
@@ -99,9 +100,7 @@ class ScanCommand extends Command
             count($nodes),
         ));
 
-        foreach ($nodes as $nodeNormalizer) {
-            $output->writeln(sprintf('  [%s] %s', $nodeNormalizer->type, $nodeNormalizer->fqcn));
-        }
+        (new ConsoleOutput())->render($nodes, null);
 
         return Command::SUCCESS;
     }

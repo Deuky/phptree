@@ -53,6 +53,10 @@ class DirectoryScanner
 
     private function isExcluded(string $filePath, string $baseDir): bool
     {
+        if (!$this->excludes) {
+            return false;
+        }
+        
         $relativePath = ltrim(explode($baseDir, $filePath)[1], ".".DIRECTORY_SEPARATOR);
 
         return array_all(

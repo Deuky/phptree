@@ -12,6 +12,9 @@
 !src/Parser/Data
 !src/Resolver
 !src/Scanner
+!src/Output
+!src/Render
+!src/Interface
 !bin
 !bin/*
 !.gitignore
