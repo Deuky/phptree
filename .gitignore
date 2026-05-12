@@ -11,7 +11,7 @@
 !src/Parser
 !src/Parser/Data
 !src/Resolver
-!src/Resolver/**
+!src/Scanner
 !bin
 !bin/*
 !.gitignore
