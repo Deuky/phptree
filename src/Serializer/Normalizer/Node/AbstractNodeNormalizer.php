@@ -4,6 +4,9 @@ namespace PhpTree\Serializer\Normalizer\Node;
 
 use PhpParser\Node;
 use PhpTree\Internal\FileGetContents;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpTree\Resolver\DocBlockResolver;
+use function array_filter, array_values, array_map;
 
 abstract class AbstractNodeNormalizer
 {
@@ -17,6 +20,7 @@ abstract class AbstractNodeNormalizer
 	public readonly bool $isFinal;
 	public readonly array $implements;
 	public readonly array $methods;
+	public readonly ?string $description;
 
 	public function __construct(
 		public readonly Node $node, 
@@ -37,6 +41,7 @@ abstract class AbstractNodeNormalizer
         $this->filePath = $file->fileName;
         $this->implements = $this->initImplements();
         $this->methods = $this->initMethods();
+        $this->description  = DocBlockResolver::extractDescription($node);
 	}
 
 	protected function initExtendsList(): array
@@ -70,12 +75,14 @@ abstract class AbstractNodeNormalizer
  
         $methods = array_filter(
             $stmts,
-            fn(Node $stmt): bool => $stmt instanceof Node\Stmt\ClassMethod,
+            fn(Node $stmt): bool => $stmt instanceof ClassMethod,
         );
 
-        return array_values(array_map(
-            fn(Node\Stmt\ClassMethod $method): MethodNodeNormalizer => new MethodNodeNormalizer($method),
-            $methods,
-        ));
+        return array_values(
+        	array_map(
+	            fn(ClassMethod $method): MethodNodeNormalizer => new MethodNodeNormalizer($method),
+	            $methods,
+        	)
+        );
 	}
 }

@@ -7,6 +7,8 @@ use PhpParser\Node\ComplexType;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\IntersectionType;
 use PhpParser\Node\UnionType;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 
 class TypeResolver
 {

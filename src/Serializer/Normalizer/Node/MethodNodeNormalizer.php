@@ -3,6 +3,8 @@
 namespace PhpTree\Serializer\Normalizer\Node;
 
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Param;
+use PhpTree\Resolver\DocBlockResolver;
 
 class MethodNodeNormalizer
 {
@@ -12,6 +14,8 @@ class MethodNodeNormalizer
     public readonly bool $isAbstract;
     public readonly TypeNodeNormalizer $returnType;
     public readonly array $parameters;
+    public readonly ?string $description;
+    public readonly array $throws;
 
     public function __construct(public readonly ClassMethod $node)
     {
@@ -19,8 +23,12 @@ class MethodNodeNormalizer
         $this->visibility = $this->initVisibility();
         $this->isStatic   = $node->isStatic();
         $this->isAbstract = $node->isAbstract();
+
         $this->returnType = new TypeNodeNormalizer($node->returnType);
         $this->parameters = $this->initParameters();
+
+        $this->description = DocBlockResolver::extractDescription($node);
+        $this->throws      = DocBlockResolver::extractThrows($node);
     }
 
     private function initVisibility(): string
@@ -35,7 +43,7 @@ class MethodNodeNormalizer
     private function initParameters(): array
     {
         return array_map(
-            fn(\PhpParser\Node\Param $param): ParameterNodeNormalizer => new ParameterNodeNormalizer($param),
+            fn(Param $param): ParameterNodeNormalizer => new ParameterNodeNormalizer($param),
             $this->node->params,
         );
     }
