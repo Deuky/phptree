@@ -8,7 +8,7 @@ class ClassNodeNormalizer extends AbstractNodeNormalizer
 {
     const TYPE = "class";
 
-    protected function initExtends(): string
+    protected function initExtends(): ?string
     {
         return ((string) $this->node->extends) ?: null;
     }
