@@ -4,10 +4,10 @@ namespace PhpTree\Interface;
 
 use PhpTree\Serializer\Normalizer\NodeNormalizer;
  
-interface OutputInterface
+interface PresenterInterface
 {
     /**
      * @param NodeNormalizer[] $nodes
      */
-    public function render(array $nodes, ?string $outputPath): void;
+    public function render(array $nodes): void;
 }

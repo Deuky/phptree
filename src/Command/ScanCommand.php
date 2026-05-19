@@ -13,7 +13,9 @@ use PhpTree\Parser\PhpFileParser;
 use PhpTree\Resolver\ListResolver;
 use InvalidArgumentException;
 use PhpTree\Internal\FileGetContents;
-use PhpTree\Output\ConsoleOutput;
+use PhpTree\Enum\FormatTypeEnum;
+use PhpTree\Writer\NullWriter;
+use PhpTree\Writer\IOWriter;
 
 #[AsCommand(
     name: 'scan',
@@ -28,6 +30,11 @@ class ScanCommand extends Command
                 name: 'directory',
                 mode: InputArgument::REQUIRED,
                 description: 'Répertoire à scanner',
+            )
+            ->addOption(
+                name: 'relative',
+                mode: InputArgument::OPTIONAL,
+                description: 'Répertoire root (pour la sortie des paths relatifs)',
             )
             ->addOption(
                 name: 'format',
@@ -58,19 +65,27 @@ class ScanCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $directory = $input->getArgument('directory');
+        $format     = $input->getOption('format');
+        $outputPath = $input->getOption('output');
+        $relative = $input->getOption('relative');
+
         $quiet     = (bool) $input->getOption('quiet');
+
         $excludes  = array_map(
             fn($exclude) => ltrim($exclude, ".".DIRECTORY_SEPARATOR),
             ListResolver::resolve($input->getOption('exclude'))
         );
 
         $realPathDirectory = realpath($directory);
+        $relativeRealPathDirectory = $relative ? realpath($relative) : $realPathDirectory;
 
         if ($realPathDirectory === false || !is_dir($realPathDirectory)) {
             throw new InvalidArgumentException(
                 sprintf('Répertoire invalide ou introuvable : %s', $directory),
             );
         }
+
+        $outputFormatType = FormatTypeEnum::{$format};
 
         $scanner = new DirectoryScanner(excludes: $excludes);
         $files = $scanner->scan($realPathDirectory);
@@ -100,7 +115,15 @@ class ScanCommand extends Command
             count($nodes),
         ));
 
-        (new ConsoleOutput())->render($nodes, null);
+        $ioWriter = new IOWriter(
+            $outputPath ? fopen($outputPath, 'w+') : STDOUT
+        );
+
+        $outputClass = $outputFormatType->value;
+            (new $outputClass(
+            maskPath: $relativeRealPathDirectory,
+            writer: $ioWriter
+        ))->render($nodes);
 
         return Command::SUCCESS;
     }

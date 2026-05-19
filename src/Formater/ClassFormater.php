@@ -1,10 +1,10 @@
 <?php
 
-namespace PhpTree\Render;
+namespace PhpTree\Formater;
 
 use PhpTree\Serializer\Normalizer\NodeNormalizer;
 
-class ClassRender
+class ClassFormater
 {
     public readonly string $offset;
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace PhpTree\Render;
+namespace PhpTree\Formater;
 
 use PhpTree\Serializer\Normalizer\Node\MethodNodeNormalizer;
 use PhpTree\Serializer\Normalizer\Node\ParameterNodeNormalizer;
 
-class MethodRender
+class MethodFormater
 {
     public readonly string $offset;
 
@@ -23,7 +23,7 @@ class MethodRender
 
         $params = array_map(
             fn(ParameterNodeNormalizer $p): string => trim(
-                ($p->type ? $p->type . ' ' : '') . $p->name .
+                $p->type . ' ' . $p->name .
                 ($p->hasDefault ? ' = ' . ($p->defaultValue ?? 'null') : '')
             ),
             $method->parameters,

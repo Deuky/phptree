@@ -1,19 +1,23 @@
 <?php
 
-namespace PhpTree\Output;
+namespace PhpTree\Presenter;
 
 use PhpTree\Serializer\Normalizer\NodeNormalizer;
-use PhpTree\Serializer\Normalizer\Node\MethodNodeNormalizer;
-use PhpTree\Serializer\Normalizer\Node\ParameterNodeNormalizer;
-use PhpTree\Interface\OutputInterface;
+use PhpTree\Interface\PresenterInterface;
+use PhpTree\Interface\WriterInterface;
 use PhpTree\Internal\ClassifiedInternal;
-use PhpTree\Render\NamespaceRender;
-use PhpTree\Render\ClassRender;
-use PhpTree\Render\MethodRender;
+use PhpTree\Formater\NamespaceFormater;
+use PhpTree\Formater\ClassFormater;
+use PhpTree\Formater\MethodFormater;
 
-class ConsoleOutput implements OutputInterface
+class ConsolePresenter implements PresenterInterface
 {
-    public function render(array $nodes, ?string $outputPath): void
+    public function __construct(
+        public readonly WriterInterface $writer,
+        ...$args
+    ){}
+
+    public function render(array $nodes): void
     {
         $orderedGroups = new ClassifiedInternal(
             $nodes, 
@@ -26,15 +30,15 @@ class ConsoleOutput implements OutputInterface
                 continue;
             }
 
-            echo implode(PHP_EOL, ($this->namespaceRender(...$namespaceNodes))).PHP_EOL;
+            $this->writer->write(implode(PHP_EOL, ($this->namespaceFormater(...$namespaceNodes))).PHP_EOL);
         }
     }
 
-    public function namespaceRender(NodeNormalizer ...$nodes)
+    public function namespaceFormater(NodeNormalizer ...$nodes)
     {
         $sub = [];
 
-        foreach ($this->classRender(...$nodes) as $class)
+        foreach ($this->classFormater(...$nodes) as $class)
         {
             $sub = [
                 ...$sub,
@@ -44,7 +48,7 @@ class ConsoleOutput implements OutputInterface
         }
 
         return [
-            new NamespaceRender(
+            new NamespaceFormater(
                 current($nodes)
             ),
             null,
@@ -52,26 +56,26 @@ class ConsoleOutput implements OutputInterface
         ];
     }
 
-    public function classRender(NodeNormalizer ...$nodes)
+    public function classFormater(NodeNormalizer ...$nodes)
     {
         return 
             array_map(
                 fn($node) => [
-                    new ClassRender(
+                    new ClassFormater(
                         $node,
                         "  "
                     ),
-                    ...$this->methodRender($node)
+                    ...$this->methodFormater($node)
                 ],
                 $nodes
             )
         ;
     }
 
-    public function methodRender(NodeNormalizer $node)
+    public function methodFormater(NodeNormalizer $node)
     {
         return array_map(
-            fn($method) => new MethodRender($method, "    "),
+            fn($method) => new MethodFormater($method, "    "),
             $node->methods
         );
     }
