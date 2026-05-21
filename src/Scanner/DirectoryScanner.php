@@ -13,7 +13,7 @@ class DirectoryScanner
     public readonly array $excludes;
 
     public function __construct(
-         $excludes = []
+        array $excludes = []
     ){
         $this->excludes = $excludes;
     }

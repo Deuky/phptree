@@ -6,7 +6,7 @@ use PhpTree\Interface\WriterInterface;
 
 class NullWriter implements WriterInterface
 {
-	public function write(string $content): void
+	public function write(string ...$contents): void
 	{
 		return;
 	}

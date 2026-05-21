@@ -22,8 +22,22 @@ class IOWriter implements WriterInterface
 		$this->fopen ?? null ?: throw new \Exception();
 	}
 
-	public function write(string $content): void
+	public function write(string|array ...$contents): void
 	{
-		fwrite($this->fopen, $content);
+		array_map($this->writeln(...), $contents);
+	}
+
+	public function writeln(string|array $line): void
+	{
+		if (is_array($line)) {
+			$this->write(...$line);
+			return;
+		}
+		fwrite($this->fopen, $line.PHP_EOL);
+	}
+
+	public function __destruct()
+	{
+		fclose($this->fopen);
 	}
 }

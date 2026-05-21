@@ -4,5 +4,5 @@ namespace PhpTree\Interface;
 
 interface WriterInterface
 {
-    public function write(string $content): void;
+    public function write(string ...$contents): void;
 }
