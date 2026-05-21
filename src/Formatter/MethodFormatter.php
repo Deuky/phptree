@@ -1,11 +1,11 @@
 <?php
 
-namespace PhpTree\Formater;
+namespace PhpTree\Formatter;
 
 use PhpTree\Serializer\Normalizer\Node\MethodNodeNormalizer;
 use PhpTree\Serializer\Normalizer\Node\ParameterNodeNormalizer;
 
-class MethodFormater
+class MethodFormatter
 {
     public readonly string $offset;
 

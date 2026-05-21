@@ -17,6 +17,9 @@ use PhpTree\Enum\FormatTypeEnum;
 use PhpTree\Writer\NullWriter;
 use PhpTree\Writer\IOWriter;
 
+/**
+ * Un commentaire
+ */
 #[AsCommand(
     name: 'scan',
     description: 'Scanne un répertoire PHP et génère un arbre de fonctionnalités',

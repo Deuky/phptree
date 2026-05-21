@@ -14,7 +14,7 @@
 !src/Scanner
 !src/Interface
 !src/Enum
-!src/Formater
+!src/Formatter
 !src/Presenter
 !src/Writer
 !bin
