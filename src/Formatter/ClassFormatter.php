@@ -6,8 +6,6 @@ use PhpTree\Serializer\Normalizer\NodeNormalizer;
 
 class ClassFormatter
 {
-    public readonly string $offset;
-
     public function __construct(
         public readonly NodeNormalizer $node,
         public readonly string $offset = ''
