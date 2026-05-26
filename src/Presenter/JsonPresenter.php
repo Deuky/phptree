@@ -5,6 +5,8 @@ namespace PhpTree\Presenter;
 use PhpTree\Serializer\Normalizer\NodeNormalizer;
 use PhpTree\Serializer\Normalizer\Node\MethodNodeNormalizer;
 use PhpTree\Serializer\Normalizer\Node\ParameterNodeNormalizer;
+use PhpTree\Serializer\Normalizer\Node\PropertyNodeNormalizer;
+use PhpTree\Serializer\Normalizer\Node\ConstantNodeNormalizer;
 use PhpTree\Interface\PresenterInterface;
 use PhpTree\Interface\WriterInterface;
 
@@ -44,6 +46,40 @@ class JsonPresenter implements PresenterInterface
                 fn(MethodNodeNormalizer $method): array => $this->serializeMethod($method),
                 $node->methods,
             ),
+        ] + (
+            $node->type == 'class' || $node->type == "trait"
+            ? [
+                'constants'   => array_map(
+                    fn(ConstantNodeNormalizer $const): array => $this->serializeConstant($const),
+                    $node->constants ?? [],
+                ),
+                'properties'  => array_map(
+                    fn(PropertyNodeNormalizer|ParameterNodeNormalizer $prop): array => $this->serializeProperty($prop),
+                    $node->properties ?? [],
+                ),
+            ] : []
+        );
+    }
+
+    private function serializeConstant(ConstantNodeNormalizer $const): array
+    {
+        return [
+            'name'       => $const->name,
+            'value'      => $const->value,
+            'visibility' => $const->visibility,
+        ];
+    }
+
+    private function serializeProperty(PropertyNodeNormalizer|ParameterNodeNormalizer $prop): array
+    {
+        return [
+            'name'       => $prop->name,
+            'type'       => (string) $prop->type ?: null,
+            'visibility' => $prop->visibility,
+            'static'     => $prop->static,
+            'readonly'   => $prop->readonly,
+            'default'    => $prop->defaultValue,
+            'description'=> $prop->description,
         ];
     }
 
@@ -58,13 +94,13 @@ class JsonPresenter implements PresenterInterface
             'description' => $method->description,
             'throws'      => $method->throws,
             'parameters'  => array_map(
-                fn(ParameterNodeNormalizer $param): array => $this->serializeParameter($param),
+                fn(ParameterNodeNormalizer $param): array => $this->serializeParameter($param, $method->isConstructor),
                 $method->parameters,
             ),
         ];
     }
 
-    private function serializeParameter(ParameterNodeNormalizer $param): array
+    private function serializeParameter(ParameterNodeNormalizer $param, bool $constructor): array
     {
         return [
             'name'        => $param->name,
@@ -72,7 +108,11 @@ class JsonPresenter implements PresenterInterface
             'nullable'    => $param->isNullable,
             'has_default' => $param->hasDefault,
             'default'     => $param->defaultValue,
-        ];
+        ] + (
+            $constructor ? [
+                "readonly" => $param->readonly
+            ] : []
+        );
     }
 
     private function relativePath(string $absolutePath): string

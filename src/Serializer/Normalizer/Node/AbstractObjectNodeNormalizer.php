@@ -8,7 +8,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpTree\Resolver\DocBlockResolver;
 use function array_filter, array_values, array_map;
 
-abstract class AbstractNodeNormalizer
+abstract class AbstractObjectNodeNormalizer
 {
 	public readonly string $name;
 	public readonly string $fqcn;
@@ -42,6 +42,14 @@ abstract class AbstractNodeNormalizer
         $this->implements = $this->initImplements();
         $this->methods = $this->initMethods();
         $this->description  = DocBlockResolver::extractDescription($node);
+
+        if (property_exists($this, "properties")) {
+	        $this->properties  = $this->initProperties();
+        }
+
+        if (property_exists($this, 'constants')) {
+	        $this->constants  = $this->initConstants();
+        }
 	}
 
 	protected function initExtendsList(): array
@@ -65,6 +73,16 @@ abstract class AbstractNodeNormalizer
 	}
 
 	protected function initImplements(): array
+	{
+		return [];
+	}
+
+	protected function initConstants(): array
+	{
+		return [];
+	}
+
+	protected function initProperties(): array
 	{
 		return [];
 	}

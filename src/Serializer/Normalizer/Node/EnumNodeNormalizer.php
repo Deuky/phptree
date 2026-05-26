@@ -2,7 +2,7 @@
 
 namespace PhpTree\Serializer\Normalizer\Node;
 
-class EnumNodeNormalizer extends AbstractNodeNormalizer
+class EnumNodeNormalizer extends AbstractObjectNodeNormalizer
 {
 	const TYPE = "enum";
 

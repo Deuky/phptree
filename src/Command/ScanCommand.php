@@ -44,7 +44,7 @@ class ScanCommand extends Command
                 shortcut: 'f',
                 mode: InputOption::VALUE_REQUIRED,
                 description: 'Format de sortie (console, json, markdown, sqlite, html, csv)',
-                default: 'console',
+                default: 'json',
             )
             ->addOption(
                 name: 'output',

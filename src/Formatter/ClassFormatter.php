@@ -10,11 +10,8 @@ class ClassFormatter
 
     public function __construct(
         public readonly NodeNormalizer $node,
-        string $offset = ''
-    )
-    {
-        $this->offset = $offset;
-    }
+        public readonly string $offset = ''
+    ) { }
 
     public function type($normalizer): string
     {

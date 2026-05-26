@@ -9,7 +9,7 @@ use PhpTree\Internal\FileGetContents;
 use PhpTree\Serializer\Normalizer\NodeNormalizer;
 use RuntimeException;
 
-final class PhpFileParser
+class PhpFileParser
 {
     public function parse(FileGetContents $file): NodeNormalizer|null
     {

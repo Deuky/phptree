@@ -6,14 +6,10 @@ use PhpTree\Serializer\Normalizer\NodeNormalizer;
 
 class NamespaceFormatter
 {
-    public readonly string $offset;
-
     public function __construct(
-        public readonly NodeNormalizer $node,
-        string $offset = ''
-    ) {
-        $this->offset = $offset;
-    }
+        NodeNormalizer $node,
+        public readonly string $offset = ''
+    ) {}
 
     public function __toString()
     {

@@ -2,7 +2,12 @@
 
 namespace PhpTree\Serializer\Normalizer\Node;
 
-class TraitNodeNormalizer extends AbstractNodeNormalizer
+use PhpTree\Trait\Constant;
+use PhpTree\Trait\Property;
+
+class TraitNodeNormalizer extends AbstractObjectNodeNormalizer
 {
+	use Constant, Property;
+
 	const TYPE = "trait";
 }

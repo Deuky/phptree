@@ -11,11 +11,8 @@ class MethodFormatter
 
     public function __construct(
         public readonly MethodNodeNormalizer $node,
-        string $offset = ''
-    )
-    {
-        $this->offset = $offset;
-    }
+        public readonly string $offset = ''
+    ) { }
 
     public function signature(): string
     {

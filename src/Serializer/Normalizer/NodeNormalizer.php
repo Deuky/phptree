@@ -15,7 +15,7 @@ class NodeNormalizer
 	];
 
 	protected array $normalizer;
-	public readonly Node\AbstractNodeNormalizer $nodeNormalizer;
+	public readonly Node\AbstractObjectNodeNormalizer $nodeNormalizer;
 	
 	public function __construct(
 		public readonly NodeInterface $node,

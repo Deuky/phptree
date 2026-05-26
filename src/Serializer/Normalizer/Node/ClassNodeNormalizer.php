@@ -3,10 +3,16 @@
 namespace PhpTree\Serializer\Normalizer\Node;
 
 use PhpParser\Node;
+use PhpTree\Trait\Constant;
+use PhpTree\Trait\Property;
 
-class ClassNodeNormalizer extends AbstractNodeNormalizer
+class ClassNodeNormalizer extends AbstractObjectNodeNormalizer
 {
+    use Constant, Property;
+
     const TYPE = "class";
+
+    public readonly array $properties;
 
     protected function initExtends(): ?string
     {
