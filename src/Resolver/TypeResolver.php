@@ -10,6 +10,7 @@ use PhpParser\Node\UnionType;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\Stmt\ClassConst;
 
 class TypeResolver
 {
@@ -25,6 +26,7 @@ class TypeResolver
             $type instanceof IntersectionType => implode('&', array_map(self::resolve(...), $type->types)),
             $type instanceof Identifier,
             $type instanceof Name             => $type->toString(),
+            $type instanceof ClassConst,
             $type instanceof Property         => self::resolve($type->type),
             default                           => (string) $type,
         };

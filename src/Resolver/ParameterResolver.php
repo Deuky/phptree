@@ -9,20 +9,37 @@ use PhpParser\Node\NullableType;
 
 class ParameterResolver
 {
-    public static function resolve($default): ?string
+    public static function resolve($default): null|float|int|bool|string
     {
         if ($default === null) {
             return null;
         }
 
         return match (true) {
+            $default instanceof Expr\ClassConstFetch => (string) $default->class . '::' . (string) $default->name,
             $default instanceof Expr\ConstFetch      => (string) $default->name,
             $default instanceof Scalar\Int_,
             $default instanceof Scalar\Float_        => (string) $default->value,
             $default instanceof Scalar\String_       => sprintf("'%s'", $default->value),
-            $default instanceof Expr\Array_          => '[]',
+            $default instanceof Expr\Array_          => '[' .
+                                                            implode(
+                                                                ', ',
+                                                                array_map(
+                                                                    [static::class, 'resolveArray'],
+                                                                    $default->items
+                                                                )
+                                                            )
+                                                        . ']',
             $default instanceof Expr\UnaryMinus      => '-' . $default->expr->value,
             default                                  => 'unknown',
         };
+    }
+
+    public static function resolveArray(Expr\ArrayItem $item) 
+    {
+        $value = self::resolve($item->value);
+        return $item->key !== null
+            ? self::resolve($item->key) . ' => ' . $value
+            : $value;
     }
 }

@@ -47,17 +47,26 @@ class JsonPresenter implements PresenterInterface
                 $node->methods,
             ),
         ] + (
-            $node->type == 'class' || $node->type == "trait"
-            ? [
-                'constants'   => array_map(
-                    fn(ConstantNodeNormalizer $const): array => $this->serializeConstant($const),
-                    $node->constants ?? [],
-                ),
-                'properties'  => array_map(
-                    fn(PropertyNodeNormalizer|ParameterNodeNormalizer $prop): array => $this->serializeProperty($prop),
-                    $node->properties ?? [],
-                ),
-            ] : []
+            
+            match ($node->type) {
+                'class', 'trait' => [
+                    'constants'   => array_map(
+                        fn(ConstantNodeNormalizer $const): array => $this->serializeConstant($const),
+                        $node->constants ?? [],
+                    ),
+                    'properties'  => array_map(
+                        fn(PropertyNodeNormalizer|ParameterNodeNormalizer $prop): array => $this->serializeProperty($prop),
+                        $node->properties ?? [],
+                    ),
+                ],
+                'enum', 'interface' => [
+                    'constants'   => array_map(
+                        fn(ConstantNodeNormalizer $const): array => $this->serializeConstant($const),
+                        $node->constants ?? [],
+                    ),
+                ],
+                default => []
+            }
         );
     }
 
@@ -67,6 +76,7 @@ class JsonPresenter implements PresenterInterface
             'name'       => $const->name,
             'value'      => $const->value,
             'visibility' => $const->visibility,
+            'type'       => (string) $const->type ?: null,
         ];
     }
 
@@ -90,7 +100,7 @@ class JsonPresenter implements PresenterInterface
             'visibility'  => $method->visibility,
             'static'      => $method->isStatic,
             'abstract'    => $method->isAbstract,
-            'return_type' => (string) $method->returnType ?: null,
+            'return_type' => $method->returnType ?: null,
             'description' => $method->description,
             'throws'      => $method->throws,
             'parameters'  => array_map(

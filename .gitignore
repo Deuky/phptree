@@ -17,6 +17,7 @@
 !src/Formatter
 !src/Presenter
 !src/Writer
+!src/Trait
 !bin
 !bin/*
 !.gitignore

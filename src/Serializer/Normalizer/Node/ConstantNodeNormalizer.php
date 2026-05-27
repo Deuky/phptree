@@ -5,13 +5,14 @@ namespace PhpTree\Serializer\Normalizer\Node;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Const_;
 use PhpTree\Resolver\ParameterResolver;
-use PhpTree\Resolver\VisibililtyResolver;
+use PhpTree\Resolver\VisibilityResolver;
 
-final class ConstantNodeNormalizer extends AbstractObjectPropertyNodeNormalizer
+class ConstantNodeNormalizer extends AbstractObjectPropertyNodeNormalizer
 {
     public readonly string $name;
     public readonly ?string $value;
     public readonly string $visibility;
+    public readonly string $type;
 
     public function __construct(
         public readonly ClassConst $node,
@@ -20,5 +21,6 @@ final class ConstantNodeNormalizer extends AbstractObjectPropertyNodeNormalizer
         $this->name       = (string) $const->name;
         $this->value      = ParameterResolver::resolve($const->value);
         $this->visibility = VisibilityResolver::resolve($node);
+        $this->type       = new TypeNodeNormalizer($node);
     }
 }
