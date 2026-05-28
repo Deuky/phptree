@@ -7,6 +7,7 @@ use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
 use PhpTree\Internal\FileGetContents;
 use PhpTree\Serializer\Normalizer\NodeNormalizer;
+use PhpParser\NodeVisitor\NameResolver;
 use RuntimeException;
 
 class PhpFileParser
@@ -31,6 +32,7 @@ class PhpFileParser
 
         $visitor = new ClassExtractorVisitor($file);
         $traverser = new NodeTraverser();
+        $traverser->addVisitor(new NameResolver());
         $traverser->addVisitor($visitor);
         $traverser->traverse($ast);
 

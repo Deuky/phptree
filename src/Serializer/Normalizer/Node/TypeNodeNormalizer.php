@@ -11,7 +11,7 @@ class TypeNodeNormalizer
     public readonly array $types;
 
     public function __construct(
-        public readonly ?Node $node
+        public readonly ?Node $node,
     )
     {
         $this->types = ($node->type ?? []) ? [$node->type] : ($node->types ?? []);

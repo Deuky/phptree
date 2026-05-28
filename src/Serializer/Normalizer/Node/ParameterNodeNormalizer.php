@@ -22,7 +22,9 @@ final class ParameterNodeNormalizer
     public readonly ?bool $static;
     public readonly ?string $description;
 
-    public function __construct(public readonly Param $node)
+    public function __construct(
+        public readonly Param $node
+    )
     {
         $this->name         = '$' . (string) $node->var->name;
         $this->type         = new TypeNodeNormalizer($node->type);

@@ -27,7 +27,10 @@ trait Property
         $properties = [];
         foreach ($propertyNodes as $property) {
             foreach ($property->props as $prop) {
-                $properties[(string) $prop->name] = new PropertyNodeNormalizer($property, $prop);
+                $properties[(string) $prop->name] = new PropertyNodeNormalizer(
+                                                            $property,
+                                                            $prop,
+                                                        );
             }
         }
 

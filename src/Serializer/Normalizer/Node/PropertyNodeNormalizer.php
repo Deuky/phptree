@@ -23,14 +23,14 @@ class PropertyNodeNormalizer
         public readonly Property $node,
         public readonly PropertyProperty $prop,
     ) {
-        $this->name        = '$' . (string) $prop->name;
-        $this->type        = new TypeNodeNormalizer($node);
-        $this->visibility  = VisibilityResolver::resolve($node);
-        $this->static      = $node->isStatic();
-        $this->readonly    = $node->isReadonly();
+        $this->name         = '$' . (string) $prop->name;
+        $this->type         = new TypeNodeNormalizer($node);
+        $this->visibility   = VisibilityResolver::resolve($node);
+        $this->static       = $node->isStatic();
+        $this->readonly     = $node->isReadonly();
         $this->defaultValue = $prop->default !== null
-            ? ParameterResolver::resolve($prop->default)
-            : null;
+                                ? ParameterResolver::resolve($prop->default)
+                                : null;
         $this->description = DocBlockResolver::extractDescription($node);
     }
 }

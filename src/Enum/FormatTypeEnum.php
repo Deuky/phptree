@@ -8,9 +8,6 @@ use PhpTree\Presenter\MarkdownPresenter;
 
 enum FormatTypeEnum: string
 {
-    const bool A = true;
-    const bool B = self::A;
-
     case console  = ConsolePresenter::class;
     case json     = JsonPresenter::class;
     case markdown = MarkdownPresenter::class;

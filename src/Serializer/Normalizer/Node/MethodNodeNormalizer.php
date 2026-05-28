@@ -19,7 +19,9 @@ class MethodNodeNormalizer
     public readonly ?string $description;
     public readonly array $throws;
 
-    public function __construct(public readonly ClassMethod $node)
+    public function __construct(
+        public readonly ClassMethod $node
+    )
     {
         $this->name       = (string) $node->name;
         $this->visibility = VisibilityResolver::resolve($node);

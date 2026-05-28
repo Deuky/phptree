@@ -14,8 +14,11 @@ class ClassExtractorVisitor extends NodeVisitorAbstract
 {
     private NodeNormalizer|null $nodeData = null;
     private string $currentNamespace = '';
+    private array $useStatement = [];
 
-    public function __construct(private readonly FileGetContents $file) {}
+    public function __construct(
+        private readonly FileGetContents $file
+    ) {}
 
     /**
      * @see PhpParser\NodeVisitor 
@@ -23,15 +26,15 @@ class ClassExtractorVisitor extends NodeVisitorAbstract
     public function enterNode(Node $node): null
     {
         $this->nodeData ??= match($node::class) {
-            Stmt\Namespace_::class => $this->namespaceNode($node),
+            Stmt\Namespace_::class  => $this->namespaceNode($node),
             Stmt\Class_::class,
             Stmt\Interface_::class,
             Stmt\Trait_::class,
             Stmt\Enum_::class => new NodeNormalizer(
-                                $node, 
-                                file: $this->file, 
-                                namespace: $this->currentNamespace
-                            ),
+                                    $node, 
+                                    file: $this->file, 
+                                    namespace: $this->currentNamespace
+                                ),
             default => null
         };
 
