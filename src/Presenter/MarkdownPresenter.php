@@ -2,18 +2,12 @@
 
 namespace PhpTree\Presenter;
 
-use PhpTree\Interface\PresenterInterface;
-use PhpTree\Interface\WriterInterface;
 use PhpTree\Serializer\Normalizer\NodeNormalizer;
 use PhpTree\Serializer\Normalizer\Node\MethodNodeNormalizer;
 use PhpTree\Serializer\Normalizer\Node\ParameterNodeNormalizer;
 
-class MarkdownPresenter implements PresenterInterface
+class MarkdownPresenter extends AbstractPresenter
 {
-    public function __construct(
-        public readonly string $maskPath,
-        public readonly WriterInterface $writer,
-    ) {}
 
     public function render(array $nodes): void
     {
@@ -33,7 +27,7 @@ class MarkdownPresenter implements PresenterInterface
 
         // Header global
         $this->writer->write(
-            '# PHPTree — ' . $this->relativePath($this->maskPath),
+            '# PHPTree — ' . basename($this->maskPath),
             '> Généré le ' . date('Y-m-d') . ' | ' . $classCount . ' classe(s) | ' . $methodCount . ' méthode(s)',
             '',
 
@@ -207,14 +201,6 @@ class MarkdownPresenter implements PresenterInterface
         }, $parameters);
 
         return implode('<br>', $parts);
-    }
-
-    private function relativePath(string $absolutePath): string
-    {
-        $base = rtrim($this->maskPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        return str_starts_with($absolutePath, $base)
-            ? substr($absolutePath, strlen($base))
-            : basename($absolutePath);
     }
 
     /**

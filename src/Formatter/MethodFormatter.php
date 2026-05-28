@@ -7,11 +7,9 @@ use PhpTree\Serializer\Normalizer\Node\ParameterNodeNormalizer;
 
 class MethodFormatter
 {
-    public readonly string $offset;
-
     public function __construct(
         public readonly MethodNodeNormalizer $node,
-        public readonly string $offset = ''
+        public readonly string $offset = '',
     ) { }
 
     public function signature(): string

@@ -7,7 +7,7 @@ use PhpTree\Serializer\Normalizer\NodeNormalizer;
 class NamespaceFormatter
 {
     public function __construct(
-        NodeNormalizer $node,
+        public readonly NodeNormalizer $node,
         public readonly string $offset = ''
     ) {}
 

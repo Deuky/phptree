@@ -3,20 +3,13 @@
 namespace PhpTree\Presenter;
 
 use PhpTree\Serializer\Normalizer\NodeNormalizer;
-use PhpTree\Interface\PresenterInterface;
-use PhpTree\Interface\WriterInterface;
 use PhpTree\Internal\ClassifiedInternal;
 use PhpTree\Formatter\NamespaceFormatter;
 use PhpTree\Formatter\ClassFormatter;
 use PhpTree\Formatter\MethodFormatter;
 
-class ConsolePresenter implements PresenterInterface
+class ConsolePresenter extends AbstractPresenter
 {
-    public function __construct(
-        public readonly WriterInterface $writer,
-        ...$args
-    ){}
-
     public function render(array $nodes): void
     {
         $orderedGroups = new ClassifiedInternal(
@@ -78,5 +71,10 @@ class ConsolePresenter implements PresenterInterface
             fn($method) => new MethodFormatter($method, "    "),
             $node->methods
         );
+    }
+
+    protected function relativePath(string $absolutePath): string
+    {
+        throw new \RuntimeException('Not expected call on this class');
     }
 }

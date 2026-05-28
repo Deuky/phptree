@@ -7,16 +7,9 @@ use PhpTree\Serializer\Normalizer\Node\MethodNodeNormalizer;
 use PhpTree\Serializer\Normalizer\Node\ParameterNodeNormalizer;
 use PhpTree\Serializer\Normalizer\Node\PropertyNodeNormalizer;
 use PhpTree\Serializer\Normalizer\Node\ConstantNodeNormalizer;
-use PhpTree\Interface\PresenterInterface;
-use PhpTree\Interface\WriterInterface;
 
-class JsonPresenter implements PresenterInterface
+class JsonPresenter extends AbstractPresenter
 {
-    public function __construct(
-        public readonly string $maskPath,
-        public readonly WriterInterface $writer
-    ) {}
-
     public function render(array $nodes): void
     {
         $classes = array_map(
@@ -123,13 +116,5 @@ class JsonPresenter implements PresenterInterface
                 "readonly" => $param->readonly
             ] : []
         );
-    }
-
-    private function relativePath(string $absolutePath): string
-    {
-        $base = rtrim($this->maskPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        return str_starts_with($absolutePath, $base)
-            ? substr($absolutePath, strlen($base))
-            : $absolutePath; // fallback si hors du répertoire scanné
     }
 }
