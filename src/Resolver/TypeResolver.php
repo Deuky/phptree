@@ -21,11 +21,7 @@ class TypeResolver
         if ($type === null) {
             return null;
         }
-
-        if (is_object($type) && $type instanceof ClassMethod) {
-
-        }
-
+        
         return match(true) {
             $type instanceof NullableType     => 'null|' . self::resolve($type->type),
             $type instanceof UnionType        => implode('|', array_map(self::resolve(...), $type->types)),
