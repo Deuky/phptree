@@ -5,14 +5,21 @@ namespace PhpTree\Serializer\Normalizer\Node;
 use PhpParser\Node;
 use PhpTree\Internal\FileGetContents;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpTree\Resolver\DocBlockResolver;
 use function array_filter, array_values, array_map;
 
-abstract class AbstractObjectNodeNormalizer
+use PhpParser\Node\ComplexType;
+use PhpParser\Node\NullableType;
+use PhpParser\Node\IntersectionType;
+use PhpParser\Node\UnionType;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
+use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\Stmt\ClassConst;
+
+abstract class AbstractObjectNodeNormalizer extends AbstractNodeNormalizer
 {
-    public readonly string $name;
     public readonly string $fqcn;
-    public readonly string $type;
     public readonly ?string $extends;
     public readonly array $extendsList;
     public readonly bool $isAbstract;
@@ -20,20 +27,19 @@ abstract class AbstractObjectNodeNormalizer
     public readonly bool $isFinal;
     public readonly array $implements;
     public readonly array $methods;
-    public readonly ?string $description;
 
     public function __construct(
-        public readonly Node $node, 
+        Node $node, 
         public readonly string $namespace,
         public readonly FileGetContents $file,
         ...$args
     )
     {
-        $this->name         = (string) $node->name;
+        parent::__construct($node);
+
         $this->fqcn         = $namespace
                                 ? ($namespace. '\\' . $this->name)
                                 : $this->name;
-        $this->type         = static::TYPE;
         $this->extendsList  = $this->initExtendsList();
         $this->extends      = $this->initExtends();
         $this->isAbstract   = $this->initIsAbstract();
@@ -41,14 +47,19 @@ abstract class AbstractObjectNodeNormalizer
         $this->filePath     = $file->fileName;
         $this->implements   = $this->initImplements();
         $this->methods      = $this->initMethods();
-        $this->description  = DocBlockResolver::extractDescription($node);
 
-        if (property_exists($this, "properties")) {
-            $this->properties  = $this->initProperties();
-        }
+        foreach(
+            [
+                'properties' => $this->initProperties(...),
+                'constants' => $this->initConstants(...),
+            ] 
+            as  $key => $callback
+        ) {
+            if (!property_exists($this, $key)) {
+                continue;
+            }
 
-        if (property_exists($this, 'constants')) {
-            $this->constants  = $this->initConstants();
+            $this->{$key} = $callback();
         }
     }
 

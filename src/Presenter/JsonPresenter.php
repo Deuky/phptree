@@ -29,7 +29,7 @@ class JsonPresenter extends AbstractPresenter
             'fqcn'        => $node->fqcn,
             'namespace'   => $node->namespace,
             'file'        => $this->relativePath($node->filePath),
-            'type'        => $node->type,
+            'type'        => (string) $node->type,
             'abstract'    => $node->isAbstract,
             'final'       => $node->isFinal,
             'extends'     => $node->extends,

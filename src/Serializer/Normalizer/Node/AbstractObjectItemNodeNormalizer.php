@@ -5,23 +5,16 @@ namespace PhpTree\Serializer\Normalizer\Node;
 use PhpParser\Node;
 use PhpTree\Resolver\VisibilityResolver;
 
-abstract class AbstractObjectItemNodeNormalizer
+abstract class AbstractObjectItemNodeNormalizer extends AbstractNodeNormalizer
 {
-    public readonly string $name;
-    public readonly string $visibility;
-    public readonly TypeNodeNormalizer $type;
+    public readonly ?string $visibility;
 
     public function __construct(
-        public readonly Node $node
+        ...$args
     )
     {
-    	$this->name 		= $this->initName();
-        $this->visibility 	= VisibilityResolver::resolve($node);
-        $this->type         = new TypeNodeNormalizer($node);
-    }
+        parent::__construct(...$args);
 
-    public function initName(): string
-    {
-        return (string) $this->node->name;
+        $this->visibility 	= VisibilityResolver::resolve($this->node);
     }
 }

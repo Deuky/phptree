@@ -10,8 +10,6 @@ class ClassNodeNormalizer extends AbstractObjectNodeNormalizer
 {
     use Constant, Property;
 
-    const TYPE = "class";
-
     public readonly array $properties;
 
     protected function initExtends(): ?string

@@ -8,8 +8,6 @@ class EnumNodeNormalizer extends AbstractObjectNodeNormalizer
 {
 	use Constant;
 
-	const TYPE = "enum";
-
 	protected function initExtends(): null
 	{
 		return null;

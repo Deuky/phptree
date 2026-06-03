@@ -8,6 +8,4 @@ use PhpTree\Trait\Property;
 class TraitNodeNormalizer extends AbstractObjectNodeNormalizer
 {
 	use Constant, Property;
-
-	const TYPE = "trait";
 }
