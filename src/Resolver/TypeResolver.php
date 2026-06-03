@@ -10,6 +10,7 @@ use PhpParser\Node\UnionType;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\ClassConst;
 
@@ -21,12 +22,17 @@ class TypeResolver
             return null;
         }
 
+        if (is_object($type) && $type instanceof ClassMethod) {
+
+        }
+
         return match(true) {
             $type instanceof NullableType     => 'null|' . self::resolve($type->type),
             $type instanceof UnionType        => implode('|', array_map(self::resolve(...), $type->types)),
             $type instanceof IntersectionType => implode('&', array_map(self::resolve(...), $type->types)),
             $type instanceof Identifier,
             $type instanceof Name             => $type->toString(),
+            $type instanceof ClassMethod      => self::resolve($type->returnType),
             $type instanceof Param,
             $type instanceof ClassConst,
             $type instanceof Property         => self::resolve($type->type),

@@ -93,7 +93,7 @@ class JsonPresenter extends AbstractPresenter
             'visibility'  => $method->visibility,
             'static'      => $method->isStatic,
             'abstract'    => $method->isAbstract,
-            'return_type' => ((string) $method->returnType) ?: null,
+            'return_type' => ((string) $method->type) ?: null,
             'description' => $method->description,
             'throws'      => $method->throws,
             'parameters'  => array_map(

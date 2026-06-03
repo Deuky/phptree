@@ -14,7 +14,6 @@ class MethodNodeNormalizer extends AbstractObjectItemNodeNormalizer
     public readonly bool $isStatic;
     public readonly bool $isAbstract;
     public readonly bool $isConstructor;
-    public readonly TypeNodeNormalizer $returnType;
     public readonly array $parameters;
     public readonly ?string $description;
     public readonly array $throws;
@@ -28,7 +27,6 @@ class MethodNodeNormalizer extends AbstractObjectItemNodeNormalizer
         $this->isAbstract = $node->isAbstract();
         $this->isConstructor = $this->name === '__construct';
 
-        $this->returnType = new TypeNodeNormalizer($node->returnType);
         $this->parameters = $this->initParameters();
 
         $this->description = DocBlockResolver::extractDescription($node);

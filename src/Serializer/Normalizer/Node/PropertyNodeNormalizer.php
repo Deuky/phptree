@@ -7,11 +7,12 @@ use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\Node\Stmt\Class_;
 use PhpTree\Resolver\ParameterResolver;
 use PhpTree\Resolver\DocBlockResolver;
-use PhpTree\Resolver\VisibilityResolver;
 
+/**
+ * @property Property $node
+ */
 class PropertyNodeNormalizer extends AbstractObjectItemNodeNormalizer
 {
-    public readonly TypeNodeNormalizer $type;
     public readonly bool $static;
     public readonly bool $readonly;
     public readonly ?string $defaultValue;
@@ -23,7 +24,6 @@ class PropertyNodeNormalizer extends AbstractObjectItemNodeNormalizer
     ) {
         parent::__construct($node);
 
-        $this->type         = new TypeNodeNormalizer($node);
         $this->static       = $node->isStatic();
         $this->readonly     = $node->isReadonly();
         $this->defaultValue = $prop->default !== null
