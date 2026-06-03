@@ -26,6 +26,7 @@ class ClassExtractorVisitor extends NodeVisitorAbstract
     public function enterNode(Node $node): null
     {
         $this->nodeData ??= match($node::class) {
+            //Stmt\Use_::class  => $this->useNode($node),
             Stmt\Namespace_::class  => $this->namespaceNode($node),
             Stmt\Class_::class,
             Stmt\Interface_::class,
@@ -37,6 +38,15 @@ class ClassExtractorVisitor extends NodeVisitorAbstract
                                 ),
             default => null
         };
+
+        return null;
+    }
+
+    protected function useNode(Stmt\Use_ $node)
+    {
+        foreach ($node->uses as $use){
+            
+        }
 
         return null;
     }

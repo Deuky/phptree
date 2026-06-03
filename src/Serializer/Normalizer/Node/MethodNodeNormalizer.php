@@ -5,12 +5,12 @@ namespace PhpTree\Serializer\Normalizer\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Param;
 use PhpTree\Resolver\DocBlockResolver;
-use PhpTree\Resolver\VisibilityResolver;
 
-class MethodNodeNormalizer
+/**
+ * @property ClassMethod $node
+ */
+class MethodNodeNormalizer extends AbstractObjectItemNodeNormalizer
 {
-    public readonly string $name;
-    public readonly string $visibility;
     public readonly bool $isStatic;
     public readonly bool $isAbstract;
     public readonly bool $isConstructor;
@@ -20,11 +20,10 @@ class MethodNodeNormalizer
     public readonly array $throws;
 
     public function __construct(
-        public readonly ClassMethod $node
+        ClassMethod $node
     )
     {
-        $this->name       = (string) $node->name;
-        $this->visibility = VisibilityResolver::resolve($node);
+        parent::__construct($node);
         $this->isStatic   = $node->isStatic();
         $this->isAbstract = $node->isAbstract();
         $this->isConstructor = $this->name === '__construct';

@@ -7,7 +7,7 @@ use PhpTree\Serializer\Normalizer\NodeNormalizer;
 interface PresenterInterface
 {
     /**
-     * @param NodeNormalizer[] $nodes
+     * @param NodeNormalizer ...$nodes
      */
-    public function render(array $nodes): void;
+    public function render(NodeNormalizer ...$nodes): void;
 }

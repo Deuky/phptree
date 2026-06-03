@@ -10,7 +10,7 @@ use PhpTree\Formatter\MethodFormatter;
 
 class ConsolePresenter extends AbstractPresenter
 {
-    public function render(array $nodes): void
+    public function render(NodeNormalizer ...$nodes): void
     {
         $orderedGroups = new ClassifiedInternal(
             $nodes, 

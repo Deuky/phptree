@@ -15,6 +15,7 @@ final class ParameterNodeNormalizer
     public readonly TypeNodeNormalizer $type;
     public readonly bool $isNullable;
     public readonly bool $hasDefault;
+    public readonly bool $isVariadic;
     public readonly ?string $defaultValue;
     public readonly ?Expr $default;
     public readonly bool $readonly;
@@ -27,7 +28,8 @@ final class ParameterNodeNormalizer
     )
     {
         $this->name         = '$' . (string) $node->var->name;
-        $this->type         = new TypeNodeNormalizer($node->type);
+        $this->type         = new TypeNodeNormalizer($node);
+        $this->isVariadic   = $node->variadic;
         $this->isNullable   = $this->initIsNullable();
         $this->hasDefault   = $node->default !== null;
         $this->readonly     = $node->isReadOnly();

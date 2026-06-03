@@ -9,6 +9,7 @@ use PhpParser\Node\IntersectionType;
 use PhpParser\Node\UnionType;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\ClassConst;
 
@@ -26,6 +27,7 @@ class TypeResolver
             $type instanceof IntersectionType => implode('&', array_map(self::resolve(...), $type->types)),
             $type instanceof Identifier,
             $type instanceof Name             => $type->toString(),
+            $type instanceof Param,
             $type instanceof ClassConst,
             $type instanceof Property         => self::resolve($type->type),
             default                           => (string) $type,

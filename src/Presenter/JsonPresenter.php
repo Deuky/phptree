@@ -10,7 +10,7 @@ use PhpTree\Serializer\Normalizer\Node\ConstantNodeNormalizer;
 
 class JsonPresenter extends AbstractPresenter
 {
-    public function render(array $nodes): void
+    public function render(NodeNormalizer ...$nodes): void
     {
         $classes = array_map(
             fn(NodeNormalizer $node): array => $this->serializeClass($node),
@@ -93,7 +93,7 @@ class JsonPresenter extends AbstractPresenter
             'visibility'  => $method->visibility,
             'static'      => $method->isStatic,
             'abstract'    => $method->isAbstract,
-            'return_type' => $method->returnType ?: null,
+            'return_type' => ((string) $method->returnType) ?: null,
             'description' => $method->description,
             'throws'      => $method->throws,
             'parameters'  => array_map(
@@ -107,8 +107,9 @@ class JsonPresenter extends AbstractPresenter
     {
         return [
             'name'        => $param->name,
-            'type'        => (string) $param->type ?: null,
+            'type'        => ((string) $param->type) ?: null ,
             'nullable'    => $param->isNullable,
+            'variadic'    => $param->isVariadic,
             'has_default' => $param->hasDefault,
             'default'     => $param->defaultValue,
         ] + (

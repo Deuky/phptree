@@ -126,7 +126,7 @@ class ScanCommand extends Command
             (new $outputClass(
             maskPath: $relativeRealPathDirectory,
             writer: $ioWriter
-        ))->render($nodes);
+        ))->render(...$nodes);
 
         return Command::SUCCESS;
     }

@@ -9,7 +9,7 @@ use PhpTree\Serializer\Normalizer\Node\ParameterNodeNormalizer;
 class MarkdownPresenter extends AbstractPresenter
 {
 
-    public function render(array $nodes): void
+    public function render(NodeNormalizer ...$nodes): void
     {
         $classCount  = count($nodes);
         $methodCount = array_sum(
@@ -84,7 +84,18 @@ class MarkdownPresenter extends AbstractPresenter
         $lines = [];
 
         // Titre classe
-        $lines[] = '### ' . $node->name;
+        $lines[] = '### ' . $node->name . ' <font size=3 style="float: right">'. $this->renderClassBadge($node).'</font>';
+
+        // Extends
+        if ($node->extends ?? null) {
+            $lines[] = '`' . $node->extends . '`';
+        }
+
+        // Implements
+        if ($node->implements ?? null) {
+            $implList = implode('` `', $node->implements);
+            $lines[]  = '`' . $implList . '`';
+        }
 
         // Description
         if ($node->description !== null && $node->description !== '') {
@@ -93,8 +104,22 @@ class MarkdownPresenter extends AbstractPresenter
 
         // Badge type + modificateurs
         $lines[] = '';
-        $lines[] = $this->renderClassBadge($node);
-        $lines[] = '';
+
+        if ($node->constants) {
+            $lines[] = '| Constant | Type | Visibilité | Valeur | Description |';
+            $lines[] = '|---|---|---|---|---|';
+            foreach ($node->constants as $constant) {
+                $lines[] = implode(' | ', [
+                    $constant->name,
+                    trim($constant->type) ?: '<font color="blue">`mixed`</font>',
+                    $constant->visibility,
+                    $constant->value,
+                    $constant->description ?? null
+                ]);
+            }
+            $lines[] = '';
+            $lines[] = '';
+        }
 
         // Tableau méthodes
         if ($node->methods) {
@@ -116,33 +141,30 @@ class MarkdownPresenter extends AbstractPresenter
     {
         $parts = [];
 
-        $typeLabel = '';
+        $typeLabel = [];
         if ($node->isAbstract) {
-            $typeLabel .= 'abstract ';
+            $typeLabel[] = '<font color=orange>`abstract`</font>';
         }
+
         if ($node->isFinal) {
-            $typeLabel .= 'final ';
-        }
-        $typeLabel .= $node->type;
-        $parts[] = '`' . $typeLabel . '`';
-
-        // Extends
-        if (!empty($node->extends)) {
-            $parts[] = 'extends `' . $node->extends . '`';
+            $typeLabel[] = '<font color=orange>`final`</font>';
         }
 
-        // Implements
-        if (!empty($node->implements)) {
-            $implList = implode('`, `', $node->implements);
-            $parts[]  = 'implements `' . $implList . '`';
-        }
+        $typeLabel[] = match($node->type) {
+            'enum' => '<font color=green>`'.$node->type.'`</font>',
+            'trait' => '<font color=orange>`'.$node->type.'`</font>',
+            'interface' => '<font color=blue>`'.$node->type.'`</font>',
+            'class' => '<font color=black>`'.$node->type.'`</font>',
+            default => '`'.$node->type.'`'
+        };
+        $parts[] = implode (' ', $typeLabel);
 
         return implode(' | ', $parts);
     }
 
     private function renderMethodRow(MethodNodeNormalizer $method): string
     {
-        $name        = '`' . $method->name . '`' . ($method->isStatic ? ' _(static)_' : '');
+        $name        = $method->name . ' '. ($method->isStatic ? ' _(static)_' : '');
         $visibility  = $method->visibility;
         $params      = $this->renderParameters($method->parameters);
         $returnType  = trim($method->returnType)
@@ -182,9 +204,9 @@ class MarkdownPresenter extends AbstractPresenter
             $nullable = $param->isNullable && !str_starts_with($type, '?') ? 'null|' : '';
             $allTypes = explode('|', $nullable . $type);
             $allTypes = implode('|', array_unique($allTypes));
-            $fullType = '`'.($allTypes ?: "mixed").'`';
+            $fullType = ($allTypes ? '`'.$allTypes.($param->isVariadic ? '[]' :'').'`': '<font color="blue">`mixed`</font>');
 
-            $sig = trim($fullType. ' ' . $name);
+            $sig = trim($fullType . ' ' . $name);
 
             if ($param->hasDefault) {
                 $sig .= ' = ' . (

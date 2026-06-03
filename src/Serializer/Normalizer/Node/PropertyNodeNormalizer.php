@@ -9,28 +9,31 @@ use PhpTree\Resolver\ParameterResolver;
 use PhpTree\Resolver\DocBlockResolver;
 use PhpTree\Resolver\VisibilityResolver;
 
-class PropertyNodeNormalizer
+class PropertyNodeNormalizer extends AbstractObjectItemNodeNormalizer
 {
-    public readonly string $name;
     public readonly TypeNodeNormalizer $type;
-    public readonly string $visibility;
     public readonly bool $static;
     public readonly bool $readonly;
     public readonly ?string $defaultValue;
     public readonly ?string $description;
 
     public function __construct(
-        public readonly Property $node,
+        Property $node,
         public readonly PropertyProperty $prop,
     ) {
-        $this->name         = '$' . (string) $prop->name;
+        parent::__construct($node);
+
         $this->type         = new TypeNodeNormalizer($node);
-        $this->visibility   = VisibilityResolver::resolve($node);
         $this->static       = $node->isStatic();
         $this->readonly     = $node->isReadonly();
         $this->defaultValue = $prop->default !== null
                                 ? ParameterResolver::resolve($prop->default)
                                 : null;
         $this->description = DocBlockResolver::extractDescription($node);
+    }
+
+    public function initName(): string
+    {
+        return '$' . (string) $this->prop->name;
     }
 }
