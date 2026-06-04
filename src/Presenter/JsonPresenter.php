@@ -7,6 +7,8 @@ use PhpTree\Serializer\Normalizer\Node\MethodNodeNormalizer;
 use PhpTree\Serializer\Normalizer\Node\ParameterNodeNormalizer;
 use PhpTree\Serializer\Normalizer\Node\PropertyNodeNormalizer;
 use PhpTree\Serializer\Normalizer\Node\ConstantNodeNormalizer;
+use PhpTree\Serializer\Normalizer\Node\EnumCaseNodeNormalizer;
+use function array_map, json_encode;
 
 class JsonPresenter extends AbstractPresenter
 {
@@ -51,7 +53,17 @@ class JsonPresenter extends AbstractPresenter
                         $node->properties ?? [],
                     ),
                 ],
-                'enum', 'interface' => [
+                'enum' => [
+                    'cases'       => array_map(
+                        fn(EnumCaseNodeNormalizer $case): array => $this->serializeEnumCase($case),
+                        $node->cases ?? [],
+                    ),
+                    'constants'   => array_map(
+                        fn(ConstantNodeNormalizer $const): array => $this->serializeConstant($const),
+                        $node->constants ?? [],
+                    ),
+                ],
+                'interface' => [
                     'constants'   => array_map(
                         fn(ConstantNodeNormalizer $const): array => $this->serializeConstant($const),
                         $node->constants ?? [],
@@ -115,5 +127,14 @@ class JsonPresenter extends AbstractPresenter
                 "readonly" => $param->readonly
             ] : []
         );
+    }
+
+    private function serializeEnumCase(EnumCaseNodeNormalizer $case): array
+    {
+        return [
+            'description' => $case->description,
+            'name'  => $case->name,
+            'value' => $case->value,
+        ];
     }
 }

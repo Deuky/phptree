@@ -9,7 +9,7 @@ use PhpParser\Node\NullableType;
 
 class ParameterResolver
 {
-    public static function resolve($default): null|float|int|bool|string
+    public static function resolve(mixed $default): null|float|int|bool|string
     {
         if ($default === null) {
             return null;

@@ -17,6 +17,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\Interface_;
+use PhpParser\Node\Stmt\EnumCase;
 
 class TypeResolver
 {
@@ -36,11 +37,13 @@ class TypeResolver
             $type instanceof Param,
             $type instanceof ClassConst,
             $type instanceof Property         => self::resolve($type->type),
+            //$type instanceof EnumCase         => self::resolve($type->type),
             $type instanceof Class_           => 'class',
             $type instanceof Enum_            => 'enum',
             $type instanceof Trait_           => 'trait',
             $type instanceof Interface_       => 'interface',
             default                           => (function() {
+                                                        echo "resolv";
                                                         print_r(
                                                             func_get_args()
                                                         );
