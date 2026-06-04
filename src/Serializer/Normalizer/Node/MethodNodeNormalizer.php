@@ -11,9 +11,9 @@ use PhpTree\Resolver\DocBlockResolver;
  */
 class MethodNodeNormalizer extends AbstractObjectItemNodeNormalizer
 {
-    public readonly bool $isStatic;
-    public readonly bool $isAbstract;
-    public readonly bool $isConstructor;
+    public readonly bool $static;
+    public readonly bool $abstract;
+    public readonly bool $constructor;
     public readonly array $parameters;
     public readonly array $throws;
 
@@ -22,9 +22,9 @@ class MethodNodeNormalizer extends AbstractObjectItemNodeNormalizer
     )
     {
         parent::__construct($node);
-        $this->isStatic   = $node->isStatic();
-        $this->isAbstract = $node->isAbstract();
-        $this->isConstructor = $this->name === '__construct';
+        $this->static   = $node->isStatic();
+        $this->abstract = $node->isAbstract();
+        $this->constructor = $this->name === '__construct';
 
         $this->parameters = $this->initParameters();
 

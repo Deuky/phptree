@@ -15,7 +15,7 @@ trait Constructor
 
 	protected function initConstructor(): void
     {
-        $this->constructor = current(array_filter($this->methods ?? [], fn($m) => $m->isConstructor)) ?: null;
+        $this->constructor = current(array_filter($this->methods ?? [], fn($m) => $m->constructor)) ?: null;
     }
 
     protected function getConstructorProperties(): array

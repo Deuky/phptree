@@ -8,11 +8,6 @@ class EnumNodeNormalizer extends AbstractObjectNodeNormalizer
 {
 	use Constant;
 
-	protected function initExtends(): null
-	{
-		return null;
-	}
-
 	protected function initImplements(): array
 	{
 		return array_map(

@@ -22,9 +22,9 @@ abstract class AbstractObjectNodeNormalizer extends AbstractNodeNormalizer
     public readonly string $fqcn;
     public readonly ?string $extends;
     public readonly array $extendsList;
-    public readonly bool $isAbstract;
+    public readonly bool $abstract;
     public readonly string $filePath;
-    public readonly bool $isFinal;
+    public readonly bool $final;
     public readonly array $implements;
     public readonly array $methods;
 
@@ -42,8 +42,8 @@ abstract class AbstractObjectNodeNormalizer extends AbstractNodeNormalizer
                                 : $this->name;
         $this->extendsList  = $this->initExtendsList();
         $this->extends      = $this->initExtends();
-        $this->isAbstract   = $this->initIsAbstract();
-        $this->isFinal      = $this->initIsFinal();
+        $this->abstract     = $this->initIsAbstract();
+        $this->final        = $this->initIsFinal();
         $this->filePath     = $file->fileName;
         $this->implements   = $this->initImplements();
         $this->methods      = $this->initMethods();

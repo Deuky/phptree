@@ -6,17 +6,10 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Expr;
 use PhpParser\Node\NullableType;
 use PhpTree\Resolver\ParameterResolver;
-use PhpTree\Resolver\DocBlockResolver;
 
-class ParameterNodeNormalizer extends AbstractObjectItemNodeNormalizer
+class ParameterNodeNormalizer extends AbstractObjectVariableNodeNormalizer
 {
-    public readonly string $name;
-    public readonly bool $isNullable;
-    public readonly bool $hasDefault;
-    public readonly bool $isVariadic;
-    public readonly ?string $defaultValue;
-    public readonly ?Expr $default;
-    public readonly bool $readonly;
+    public readonly bool $variadic;
     public readonly ?bool $static;
 
     public function __construct(
@@ -26,31 +19,8 @@ class ParameterNodeNormalizer extends AbstractObjectItemNodeNormalizer
     {
         parent::__construct($node);
 
-        $this->isVariadic   = $node->variadic;
-        $this->isNullable   = $this->initIsNullable();
-        $this->hasDefault   = $node->default !== null;
-        $this->readonly     = $node->isReadOnly();
-        
-        if ($this->readonly) {
-            $this->static = false;
-        } else {
-            $this->static = null;
-        }
-
-        if ($this->hasDefault) {
-            $this->default = $node->default;
-            $this->defaultValue = ParameterResolver::resolve($this->default);
-        } else {
-            $this->default = null;
-            $this->defaultValue = null;
-        }
-    }
-
-    private function initIsNullable(): bool
-    {
-        return $this->node->type
-            ? $this->node instanceof NullableType
-            : false;
+        $this->variadic     = $node->variadic;
+        $this->static       = $this->readonly ? false : null;
     }
 
     public function initName(): string

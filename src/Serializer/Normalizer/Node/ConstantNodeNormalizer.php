@@ -15,6 +15,7 @@ class ConstantNodeNormalizer extends AbstractObjectItemNodeNormalizer
         public readonly Const_ $const,
     ) {
         parent::__construct($node);
+        
         $this->value      = ParameterResolver::resolve($const->value);
     }
 

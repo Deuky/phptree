@@ -6,7 +6,6 @@ use PhpParser\Node;
 use PhpTree\Internal\FileGetContents;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpTree\Resolver\DocBlockResolver;
-use function array_filter, array_values, array_map;
 
 abstract class AbstractNodeNormalizer
 {

@@ -30,8 +30,8 @@ class JsonPresenter extends AbstractPresenter
             'namespace'   => $node->namespace,
             'file'        => $this->relativePath($node->filePath),
             'type'        => (string) $node->type,
-            'abstract'    => $node->isAbstract,
-            'final'       => $node->isFinal,
+            'abstract'    => $node->abstract,
+            'final'       => $node->final,
             'extends'     => $node->extends,
             'implements'  => $node->implements,
             'description' => $node->description,
@@ -40,8 +40,7 @@ class JsonPresenter extends AbstractPresenter
                 $node->methods,
             ),
         ] + (
-            
-            match ($node->type) {
+            match ((string) $node->type) {
                 'class', 'trait' => [
                     'constants'   => array_map(
                         fn(ConstantNodeNormalizer $const): array => $this->serializeConstant($const),
@@ -81,7 +80,7 @@ class JsonPresenter extends AbstractPresenter
             'visibility' => $prop->visibility,
             'static'     => $prop->static,
             'readonly'   => $prop->readonly,
-            'default'    => $prop->defaultValue,
+            'default'    => $prop->default,
             'description'=> $prop->description,
         ];
     }
@@ -91,13 +90,13 @@ class JsonPresenter extends AbstractPresenter
         return [
             'name'        => $method->name,
             'visibility'  => $method->visibility,
-            'static'      => $method->isStatic,
-            'abstract'    => $method->isAbstract,
+            'static'      => $method->static,
+            'abstract'    => $method->abstract,
             'return_type' => ((string) $method->type) ?: null,
             'description' => $method->description,
             'throws'      => $method->throws,
             'parameters'  => array_map(
-                fn(ParameterNodeNormalizer $param): array => $this->serializeParameter($param, $method->isConstructor),
+                fn(ParameterNodeNormalizer $param): array => $this->serializeParameter($param, $method->constructor),
                 $method->parameters,
             ),
         ];
@@ -108,10 +107,9 @@ class JsonPresenter extends AbstractPresenter
         return [
             'name'        => $param->name,
             'type'        => ((string) $param->type) ?: null ,
-            'nullable'    => $param->isNullable,
-            'variadic'    => $param->isVariadic,
+            'variadic'    => $param->variadic,
             'has_default' => $param->hasDefault,
-            'default'     => $param->defaultValue,
+            'default'     => $param->default,
         ] + (
             $constructor ? [
                 "readonly" => $param->readonly
