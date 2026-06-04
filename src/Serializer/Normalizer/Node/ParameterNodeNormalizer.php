@@ -3,9 +3,6 @@
 namespace PhpTree\Serializer\Normalizer\Node;
 
 use PhpParser\Node\Param;
-use PhpParser\Node\Expr;
-use PhpParser\Node\NullableType;
-use PhpTree\Resolver\ParameterResolver;
 
 class ParameterNodeNormalizer extends AbstractObjectVariableNodeNormalizer
 {

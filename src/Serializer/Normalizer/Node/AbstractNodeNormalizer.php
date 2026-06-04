@@ -3,8 +3,6 @@
 namespace PhpTree\Serializer\Normalizer\Node;
 
 use PhpParser\Node;
-use PhpTree\Internal\FileGetContents;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpTree\Resolver\DocBlockResolver;
 
 abstract class AbstractNodeNormalizer

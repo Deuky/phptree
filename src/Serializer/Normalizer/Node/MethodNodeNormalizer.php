@@ -5,6 +5,7 @@ namespace PhpTree\Serializer\Normalizer\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Param;
 use PhpTree\Resolver\DocBlockResolver;
+use function array_map;
 
 /**
  * @property ClassMethod $node
@@ -22,12 +23,11 @@ class MethodNodeNormalizer extends AbstractObjectItemNodeNormalizer
     )
     {
         parent::__construct($node);
-        $this->static   = $node->isStatic();
-        $this->abstract = $node->isAbstract();
+        $this->static      = $node->isStatic();
+        $this->abstract    = $node->isAbstract();
         $this->constructor = $this->name === '__construct';
 
         $this->parameters = $this->initParameters();
-
         $this->throws      = DocBlockResolver::extractThrows($node);
     }
 

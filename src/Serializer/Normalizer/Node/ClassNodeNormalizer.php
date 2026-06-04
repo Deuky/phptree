@@ -5,6 +5,7 @@ namespace PhpTree\Serializer\Normalizer\Node;
 use PhpParser\Node;
 use PhpTree\Trait\Constant;
 use PhpTree\Trait\Property;
+use function array_map;
 
 class ClassNodeNormalizer extends AbstractObjectNodeNormalizer
 {

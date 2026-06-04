@@ -4,6 +4,7 @@ namespace PhpTree\Serializer\Normalizer\Node;
 
 use PhpParser\Node;
 use PhpTree\Trait\Constant;
+use function implode;
 
 class InterfaceNodeNormalizer extends AbstractObjectNodeNormalizer
 {

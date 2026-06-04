@@ -5,17 +5,7 @@ namespace PhpTree\Serializer\Normalizer\Node;
 use PhpParser\Node;
 use PhpTree\Internal\FileGetContents;
 use PhpParser\Node\Stmt\ClassMethod;
-use function array_filter, array_values, array_map;
-
-use PhpParser\Node\ComplexType;
-use PhpParser\Node\NullableType;
-use PhpParser\Node\IntersectionType;
-use PhpParser\Node\UnionType;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
-use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\ClassConst;
+use function array_filter, array_values, array_map, property_exists;
 
 abstract class AbstractObjectNodeNormalizer extends AbstractNodeNormalizer
 {

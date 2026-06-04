@@ -4,7 +4,6 @@ namespace PhpTree\Serializer\Normalizer\Node;
 
 use PhpParser\Node;
 use PhpTree\Resolver\TypeResolver;
-use PhpParser\Node\Name\FullyQualified;
 
 class TypeNodeNormalizer
 {
