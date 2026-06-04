@@ -4,8 +4,6 @@ namespace PhpTree\Serializer\Normalizer\Node;
 
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Expr;
 use PhpTree\Resolver\ParameterResolver;
 
 /**
@@ -21,7 +19,7 @@ class PropertyNodeNormalizer extends AbstractObjectVariableNodeNormalizer
     ) {
         parent::__construct($node);
 
-        $this->static       = $node->isStatic();
+        $this->static = $node->isStatic();
     }
 
     public function initName(): string

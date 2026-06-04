@@ -4,12 +4,13 @@ namespace PhpTree\Serializer\Normalizer\Node;
 
 use PhpParser\Node;
 use PhpTree\Resolver\DocBlockResolver;
+use PhpTree\Resolver\TypeResolver;
 
 abstract class AbstractNodeNormalizer
 {
     public readonly string $name;
     public readonly ?string $description;
-    public readonly TypeNodeNormalizer $type;
+    public readonly ?string $type;
     
     public function __construct(
         public readonly Node $node, 
@@ -30,8 +31,8 @@ abstract class AbstractNodeNormalizer
         return (string) $this->node->name;
     }
 
-    protected function initType(): TypeNodeNormalizer
+    protected function initType(): ?string
     {
-    	return new TypeNodeNormalizer($this->node);
+    	return TypeResolver::resolve($this->node);
     }
 }
