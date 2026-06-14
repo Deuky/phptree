@@ -51,18 +51,13 @@ class ConsolePresenter extends AbstractPresenter
 
     public function classFormatter(NodeNormalizer ...$nodes)
     {
-        return 
-            array_map(
-                fn($node) => [
-                    new ClassFormatter(
-                        $node,
-                        "  "
-                    ),
-                    ...$this->methodFormatter($node)
-                ],
-                $nodes
-            )
-        ;
+        return array_map(
+            fn($node) => [
+                new ClassFormatter($node, "  "),
+                ...$this->methodFormatter($node)
+            ],
+            $nodes
+        );
     }
 
     public function methodFormatter(NodeNormalizer $node)

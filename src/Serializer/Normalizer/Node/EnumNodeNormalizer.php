@@ -6,6 +6,7 @@ use PhpTree\Trait\Constant;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\EnumCase;
+use PhpParser\Node\Stmt\ClassMethod;
 use function array_map, array_filter;
 
 class EnumNodeNormalizer extends AbstractObjectNodeNormalizer
@@ -35,7 +36,7 @@ class EnumNodeNormalizer extends AbstractObjectNodeNormalizer
             fn(EnumCase $stmt) => new EnumCaseNodeNormalizer($stmt, $this->node),
             array_filter(
                 $this->node->stmts,
-                fn(Nop|EnumCase $stmt) => $stmt instanceof EnumCase 
+                fn(Nop|EnumCase|ClassMethod $stmt) => $stmt instanceof EnumCase 
             )
         );
     }

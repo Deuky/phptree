@@ -22,6 +22,8 @@ abstract class AbstractObjectNodeNormalizer extends AbstractNodeNormalizer
         Node $node, 
         public readonly string $namespace,
         public readonly FileGetContents $file,
+        public readonly array $useClasses = [],
+        public readonly array $useFunctions = [],
         ...$args
     )
     {

@@ -15,11 +15,11 @@ class ClassFormatter
     {
         $parts = [];
 
-        if ($normalizer->isFinal) {
+        if ($normalizer->final) {
             $parts[] = 'final';
         }
 
-        if ($normalizer->isAbstract) {
+        if ($normalizer->abstract) {
             $parts[] = 'abstract';
         }
 

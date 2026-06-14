@@ -30,6 +30,10 @@ class JsonPresenter extends AbstractPresenter
             'name'        => $node->name,
             'fqcn'        => $node->fqcn,
             'namespace'   => $node->namespace,
+            'uses'        => [
+                'class' => $node->useClasses,
+                'function' => $node->useFunctions
+            ],
             'file'        => $this->relativePath($node->filePath),
             'type'        => (string) $node->type,
             'abstract'    => $node->abstract,
@@ -120,7 +124,6 @@ class JsonPresenter extends AbstractPresenter
             'name'        => $param->name,
             'type'        => ((string) $param->type) ?: null ,
             'variadic'    => $param->variadic,
-            'has_default' => $param->hasDefault,
             'default'     => $param->default,
         ] + (
             $constructor ? [

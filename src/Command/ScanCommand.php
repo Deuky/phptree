@@ -16,6 +16,7 @@ use PhpTree\Internal\FileGetContents;
 use PhpTree\Enum\FormatTypeEnum;
 use PhpTree\Writer\NullWriter;
 use PhpTree\Writer\IOWriter;
+use SplFileInfo;
 
 /**
  * Un commentaire
@@ -32,7 +33,7 @@ class ScanCommand extends Command
             ->addArgument(
                 name: 'directory',
                 mode: InputArgument::REQUIRED,
-                description: 'Répertoire à scanner',
+                description: 'Répertoire|Fichier à scanner'
             )
             ->addOption(
                 name: 'relative',
@@ -82,7 +83,7 @@ class ScanCommand extends Command
         $realPathDirectory = realpath($directory);
         $relativeRealPathDirectory = $relative ? realpath($relative) : $realPathDirectory;
 
-        if ($realPathDirectory === false || !is_dir($realPathDirectory)) {
+        if ($realPathDirectory === false) {
             throw new InvalidArgumentException(
                 sprintf('Répertoire invalide ou introuvable : %s', $directory),
             );
@@ -90,8 +91,13 @@ class ScanCommand extends Command
 
         $outputFormatType = FormatTypeEnum::{$format};
 
-        $scanner = new DirectoryScanner(excludes: $excludes);
-        $files = $scanner->scan($realPathDirectory);
+        if (is_dir($realPathDirectory)) {
+            $scanner = new DirectoryScanner(excludes: $excludes);
+            $files = $scanner->scan($realPathDirectory);
+        } elseif (is_file($realPathDirectory)) {
+            $files = [new SplFileInfo($realPathDirectory)];
+            $relativeRealPathDirectory = dirname($realPathDirectory);
+        }
         $cFiles = 0;
 
         $parser      = new PhpFileParser();

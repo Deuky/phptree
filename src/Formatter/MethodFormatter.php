@@ -27,10 +27,10 @@ class MethodFormatter
         $signature = sprintf(
             '%s%s%s(%s)%s',
             $method->visibility . ' ',
-            $method->isStatic ? 'static ' : '',
+            $method->static ? 'static ' : '',
             $method->name,
             implode(', ', $params),
-            $method->returnType->__toString() ? ": ".$method->returnType : '',
+            $method->type ? ": ".((string) $method->type) : '',
         );
 
         if ($method->throws !== []) {
