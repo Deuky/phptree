@@ -1,0 +1,13 @@
+services:
+  phptree:
+    image: ${PHPTREE_IMAGE}:${VERSION}
+    build:
+      target: ${BUILD_TARGET}
+      args:
+        PHP_IMAGE: ${PHP_IMAGE}
+        WORKDIR: ${WORKDIR:-/app}
+        BUILD_TARGET: ${BUILD_TARGET:-develop}
+        ABSPATH_PHPTREE: ${ABSPATH_PHPTREE:-/usr/bin/phptree}
+    extends:
+      file: docker-compose/${BUILD_TARGET}.yml
+      service: phptree

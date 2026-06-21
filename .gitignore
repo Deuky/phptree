@@ -20,4 +20,13 @@
 !src/Trait
 !bin
 !bin/*
+!mk
+!mk/*
+!docker-compose.yml
+!docker-compose
+!docker-compose/*.yml
+!Dockerfile
+!Makefile
+!.dockerignore
 !.gitignore
+!.env.example

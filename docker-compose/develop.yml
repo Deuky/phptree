@@ -1,0 +1,4 @@
+services:
+  phptree:
+    volumes:
+      - ${PWD}:/app
