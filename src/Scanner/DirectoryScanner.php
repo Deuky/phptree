@@ -59,7 +59,7 @@ class DirectoryScanner
         
         $relativePath = ltrim(explode($baseDir, $filePath)[1], ".".DIRECTORY_SEPARATOR);
 
-        return array_all(
+        return array_any(
             $this->excludes,
             fn($exclude) => str_starts_with($relativePath, $exclude)
         );

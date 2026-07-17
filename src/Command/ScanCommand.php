@@ -55,8 +55,8 @@ class ScanCommand extends Command
             )
             ->addOption(
                 name: 'exclude',
-                mode: InputOption::VALUE_REQUIRED,
-                description: 'Répertoires à exclure, séparés par des virgules',
+                mode: InputOption::VALUE_REQUIRED, // @todo A changer, faut que ça soit de exclude separé
+                description: 'Répertoires à exclure, séparés par des virgules', 
             )
             ->addOption(
                 name: 'quiet',
