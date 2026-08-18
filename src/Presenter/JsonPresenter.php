@@ -19,7 +19,7 @@ class JsonPresenter extends AbstractPresenter
             $nodes,
         );
 
-        $json = json_encode(['classes' => $classes], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $json = json_encode(['classes' => $classes], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
         $this->writer->write($json);
     }
