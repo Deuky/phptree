@@ -30,3 +30,5 @@
 !.dockerignore
 !.gitignore
 !.env.example
+!README.md
+!README.fr.md

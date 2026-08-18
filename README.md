@@ -1,94 +1,79 @@
 # phptree
+**PHP CLI that scans a directory (or a file) and generates a tree of features**: classes, methods, functions, etc., extracted through static analysis of the source code.
 
-**CLI PHP qui scanne un répertoire (ou un fichier) et génère un arbre de fonctionnalités** : classes, méthodes, fonctions, etc., extraits par analyse statique du code source.
+## How it works
+`phptree` recursively traverses a PHP directory, parses each file with [nikic/php-parser](https://github.com/nikic/PHP-Parser) (AST analysis, no code execution), then outputs the extracted structure (classes, methods, functions...) as a tree, in the output format of your choice.
 
-## Fonctionnement
-
-`phptree` parcourt récursivement un répertoire PHP, parse chaque fichier avec [nikic/php-parser](https://github.com/nikic/PHP-Parser) (analyse AST, pas d'exécution du code), puis restitue la structure extraite (classes, méthodes, fonctions...) sous forme d'un arbre, dans le format de sortie de votre choix.
-
-Le CLI est construit avec [Symfony Console](https://symfony.com/doc/current/components/console.html) et se distribue sous forme d'un exécutable PHAR autonome (`phptree.phar`) ou d'une image Docker.
+The CLI is built with [Symfony Console](https://symfony.com/doc/current/components/console.html) and is distributed as a standalone PHAR executable (`phptree.phar`) or as a Docker image.
 
 ## Installation
 
 ### Via Composer
-
 ```bash
 composer require phptree/phptree
 ./vendor/bin/phptree scan src/
 ```
 
-### Via le PHAR compilé
-
+### Via the compiled PHAR
 ```bash
-php build.php          # génère phptree.phar
+php build.php          # generates phptree.phar
 chmod +x phptree.phar
 ./phptree.phar scan src/
 ```
 
 ### Via Docker
-
 ```bash
 docker pull ghcr.io/deuky/phptree/unit-alpine:8.4-0.0.2
 ```
 
-## Utilisation
-
+## Usage
 ```bash
 phptree scan <directory> [options]
 ```
-
-La commande par défaut est `scan` (vous pouvez donc aussi écrire simplement `phptree <directory>`).
+The default command is `scan` (so you can also simply write `phptree <directory>`).
 
 ### Argument
-
 | Argument | Description |
 |---|---|
-| `directory` | Répertoire ou fichier PHP à scanner (obligatoire) |
+| `directory` | Directory or PHP file to scan (required) |
 
 ### Options
-
-| Option | Raccourci | Description |
+| Option | Shortcut | Description |
 |---|---|---|
-| `--relative=<path>` | | Répertoire racine utilisé pour générer des chemins relatifs en sortie |
-| `--format=<fmt>` | `-f` | Format de sortie : `console`, `json` (défaut), `markdown`, `sqlite`, `html`, `csv` |
-| `--output=<file>` | `-o` | Écrit le résultat dans un fichier au lieu de la sortie standard |
-| `--exclude=<dirs>` | | Répertoires à exclure, séparés par des virgules |
-| `--quiet` | `-q` | Masque les avertissements (incohérences de docblock, erreurs non fatales) |
+| `--relative=<path>` | | Root directory used to generate relative paths in the output |
+| `--format=<fmt>` | `-f` | Output format: `console`, `json` (default), `markdown`, `sqlite`, `html`, `csv` |
+| `--output=<file>` | `-o` | Writes the result to a file instead of standard output |
+| `--exclude=<dirs>` | | Directories to exclude, comma-separated |
+| `--quiet` | `-q` | Hides warnings (docblock inconsistencies, non-fatal errors) |
 
-### Exemples
-
+### Memory Usage Limitation
+To increase the memory_limit, use the PHP arguments directly:
 ```bash
-# Scan simple, sortie JSON sur stdout
+php -d memory_limit=<size> phptree ...
+```
+
+### Examples
+```bash
+# Simple scan, JSON output on stdout
 phptree scan src/
-
-# Sortie Markdown dans un fichier, avec chemins relatifs
-phptree scan src/ --format markdown --relative . --output arbre.md
-
-# Exclure les dossiers de tests et vendor
+# Markdown output to a file, with relative paths
+phptree scan src/ --format markdown --relative . --output tree.md
+# Exclude test and vendor folders
 phptree scan . --exclude tests,vendor
 ```
 
-## Formats de sortie
-
-- **console** : affichage lisible dans le terminal
-- **json** *(défaut)* : structure exploitable par d'autres outils
-- **markdown** : documentation prête à intégrer
-- **html** : rapport navigable
-- **csv** : export tabulaire
-- **sqlite** : base de données interrogeable
+## Output formats
+- **json** *(default)*: structure usable by other tools
 
 ## Docker
+The `Dockerfile` defines several build targets (`base`, `skeleton`, `develop`, `source`, `unit`, `artifact`, `unit-alpine`), driven via `docker-compose.yml` and the `Makefile`. The `unit-alpine` target produces a minimal image (PHP Alpine) containing only the compiled `phptree` binary, without the source code or development dependencies — ideal for use in CI/CD or production.
 
-Le `Dockerfile` définit plusieurs cibles de build (`base`, `skeleton`, `develop`, `source`, `unit`, `artifact`, `unit-alpine`), pilotées via `docker-compose.yml` et le `Makefile`. La cible `unit-alpine` produit une image minimale (PHP Alpine) ne contenant que le binaire `phptree` compilé, sans le code source ni les dépendances de développement — idéale pour une utilisation en CI/CD ou en production.
-
-## Stack technique
-
+## Tech stack
 - PHP ^8.3
-- `symfony/console` ^7.0 — interface CLI
-- `nikic/php-parser` ^5.0 — analyse statique / AST
-- Tests : `pestphp/pest` ^3.0
-- Distribution : PHAR (via `build.php`) ou image Docker
+- `symfony/console` ^7.0 — CLI interface
+- `nikic/php-parser` ^5.0 — static analysis / AST
+- Tests: `pestphp/pest` ^3.0
+- Distribution: PHAR (via `build.php`) or Docker image
 
-## Licence
-
+## License
 MIT
